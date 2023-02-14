@@ -1,0 +1,3 @@
+interface CategoriesBody {
+  name: string
+}
