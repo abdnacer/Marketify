@@ -4,5 +4,3 @@ interface ControllerBody {
   path: string,
   router: Router
 }
-
-export default ControllerBody

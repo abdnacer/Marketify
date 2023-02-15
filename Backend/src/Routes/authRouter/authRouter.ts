@@ -1,14 +1,23 @@
 import express from 'express'
 
-const router = express.Router()
+class RouterAuth {
+  public router: express.Router
 
-router.post('/register')
-router.get('verify-email/:token')
-router.post('/login')
-router.post('/reset-password')
-router.post('/forgot-password')
-router.get('/verify-forgot-password/:token')
-router.post('/form-forgot-password')
-router.get('/logout')
+  constructor() {
+    this.router = express()
+  }
 
-export default router
+  public User() {
+    this.router.post('/register')
+    this.router.get('verify-email/:token')
+    this.router.post('/login')
+    this.router.post('/reset-password')
+    this.router.post('/forgot-password')
+    this.router.get('/verify-forgot-password/:token')
+    this.router.post('/form-forgot-password')
+    this.router.get('/logout')
+  }
+}
+
+
+export default RouterAuth

@@ -2,14 +2,18 @@ import 'dotenv/config'
 import express from 'express'
 import { db_conex } from './Config/db'
 import env from './utils/validateEnv'
+import RouterAuth from './Routes/authRouter/authRouter'
+import RouterCategorie from './Routes/userRouter/categorieRouter'
+import RouterProduits from './Routes/userRouter/produitRouter'
+import RouterCommands from './Routes/userRouter/commandRouter'
 
 class App {
   public app: express.Application
 
   constructor() {
     this.app = express();
-    this.db();
     this.initializeMiddlewares();
+    this.db();
     this.router()
   }
 
@@ -23,10 +27,10 @@ class App {
   }
 
   private router() {
-    this.app.use('/api/auth')
-    this.app.use('/api/user')
-    this.app.use('/api/user')
-    this.app.use('/api/user')
+    this.app.use('/api/auth', new RouterAuth().User)
+    this.app.use('/api/user', new RouterProduits().Produit)
+    this.app.use('/api/user', new RouterCategorie().Categorie)
+    this.app.use('/api/user', new RouterCommands().Commands)
   }
 
   public listen() {
