@@ -8,7 +8,6 @@ import { ProduitRouter } from './Routes/userRouter/produitRouter'
 import { CategorieRouter } from './Routes/userRouter/categorieRouter'
 import { CommandsRouter } from './Routes/userRouter/commandRouter'
 
-
 class App {
   public app: express.Application
 

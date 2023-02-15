@@ -1,5 +1,6 @@
 import express from 'express'
 import Categories from '../../Controllers/userController/categorieController'
+import errorMiddleware from '../../Middlewares/error.middlewre'
 
 class RouterCategorie {
   public router: express.Router
@@ -7,6 +8,7 @@ class RouterCategorie {
   constructor() {
     this.router = express()
     this.Categorie()
+    this.errorMiddleware()
   }
 
   private Categorie() {
@@ -14,6 +16,10 @@ class RouterCategorie {
     this.router.put('/categories', Categories.modifierCategories)
     this.router.get('/categories', Categories.afficherCategories)
     this.router.delete('/categories', Categories.deleteCategories)
+  }
+
+  private errorMiddleware(){
+    this.router.use(errorMiddleware)
   }
 }
 
