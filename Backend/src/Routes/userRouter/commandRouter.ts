@@ -1,23 +1,21 @@
 import express from 'express'
+import Commands from '../../Controllers/userController/commandsController'
 
 class RouterCommands {
   public router: express.Router
 
   constructor() {
     this.router = express()
+    this.Commands()
   }
 
-  public Commands() {
-    this.router.post('/register')
-    this.router.get('verify-email/:token')
-    this.router.post('/login')
-    this.router.post('/reset-password')
-    this.router.post('/forgot-password')
-    this.router.get('/verify-forgot-password/:token')
-    this.router.post('/form-forgot-password')
-    this.router.get('/logout')
+  private Commands() {
+    this.router.post('/commands', Commands.addCommands)
+    this.router.put('/commands', Commands.modifierCommands)
+    this.router.get('/commands', Commands.afficherCommands)
+    this.router.delete('/commands', Commands.deleteCommands)
   }
 }
 
 
-export default RouterCommands
+export const CommandsRouter = new RouterCommands().router

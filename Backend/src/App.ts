@@ -1,11 +1,13 @@
 import 'dotenv/config'
 import express from 'express'
 import { db_conex } from './Config/db'
+import './Models'
 import env from './utils/validateEnv'
-import RouterAuth from './Routes/authRouter/authRouter'
-import RouterCategorie from './Routes/userRouter/categorieRouter'
-import RouterProduits from './Routes/userRouter/produitRouter'
-import RouterCommands from './Routes/userRouter/commandRouter'
+import { AuthRouter } from './Routes/authRouter/authRouter'
+import { ProduitRouter } from './Routes/userRouter/produitRouter'
+import { CategorieRouter } from './Routes/userRouter/categorieRouter'
+import { CommandsRouter } from './Routes/userRouter/commandRouter'
+
 
 class App {
   public app: express.Application
@@ -19,7 +21,7 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: false }))
+    this.app.use(express.urlencoded({ extended: true }))
   }
 
   private db() {
@@ -27,15 +29,15 @@ class App {
   }
 
   private router() {
-    this.app.use('/api/auth', new RouterAuth().User)
-    this.app.use('/api/user', new RouterProduits().Produit)
-    this.app.use('/api/user', new RouterCategorie().Categorie)
-    this.app.use('/api/user', new RouterCommands().Commands)
+    this.app.use('/api/auth', AuthRouter)
+    this.app.use('/api/user', ProduitRouter)
+    this.app.use('/api/user', CategorieRouter)
+    this.app.use('/api/user', CommandsRouter)
   }
 
   public listen() {
     const port = env.PORT || 8888
-    this.app.listen(port, () => console.log(`server is runing on port ${port}`))
+    this.app.listen(port, () => console.log(`Server is Runing on Port ${port}`))
   }
 }
 

@@ -1,23 +1,20 @@
 import express from 'express'
+import Auth from '../../Controllers/authController/authController'
 
 class RouterAuth {
   public router: express.Router
 
   constructor() {
     this.router = express()
+    this.User()
   }
 
-  public User() {
-    this.router.post('/register')
-    this.router.get('verify-email/:token')
-    this.router.post('/login')
-    this.router.post('/reset-password')
-    this.router.post('/forgot-password')
-    this.router.get('/verify-forgot-password/:token')
-    this.router.post('/form-forgot-password')
-    this.router.get('/logout')
+  private User() {
+    this.router.post('/register', Auth.Register)
+    this.router.post('/login', Auth.Login)
+    this.router.post('/reset-password', Auth.ResetPassword)
+    this.router.get('/logout', Auth.Logout)
   }
 }
 
-
-export default RouterAuth
+export const AuthRouter = new RouterAuth().router
