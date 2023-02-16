@@ -1,17 +1,19 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../../Services/HttpException"
+import User from '../../Models/User'
+import bcrypt from 'bcryptjs'
 class ControllerAuth {
+
+  public Register = async (req: Request, res: Response, next: NextFunction) => {
+    res.send('register')  
+  }
 
   public Login = async (req: Request, res: Response, next: NextFunction) => {
     // pour envoyer un message d'erreur on va ecrire cette methode
-    // next(new HttpException(status, 'message'))
+    // return next(new HttpException(status, 'message'))
     // par example
     // return next(new HttpException(400, 'Please fill all the fields'))
     res.send('Login')
-  }
-
-  public Register = async (req: Request, res: Response, next: NextFunction) => {
-    res.send('Register')
   }
 
   public ResetPassword = async (req: Request, res: Response, next: NextFunction) => {

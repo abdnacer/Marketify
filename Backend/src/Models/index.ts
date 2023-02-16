@@ -10,7 +10,8 @@ import RoleBody from "../Interfaces/roleInterface"
 mongoose.Promise = global.Promise
 
 const db: DbBody = {
-  mongoose, User,
+  mongoose, 
+  User,
   Role,
   Categories,
   Commands,
@@ -31,7 +32,7 @@ db.Role.estimatedDocumentCount((err: string, count: number) => {
       } else {
         console.log("added Role to roles collection", Role)
       }
-    });
+    })
   }
 })
 

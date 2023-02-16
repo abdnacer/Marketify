@@ -12,9 +12,9 @@ class App {
   public app: express.Application
 
   constructor() {
-    this.app = express();
-    this.initializeMiddlewares();
-    this.db();
+    this.app = express()
+    this.initializeMiddlewares()
+    this.db()
     this.router()
   }
 

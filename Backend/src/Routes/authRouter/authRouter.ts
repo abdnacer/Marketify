@@ -8,13 +8,13 @@ class RouterAuth {
   constructor() {
     this.router = express()
     this.User()
-    this.errorMiddleware
+    this.errorMiddleware()
   }
 
   private User() {
     this.router.post('/register', Auth.Register)
     this.router.post('/login', Auth.Login)
-    this.router.post('/reset-password', Auth.ResetPassword)
+    this.router.get('/reset-password', Auth.ResetPassword)
     this.router.get('/logout', Auth.Logout)
   }
 
