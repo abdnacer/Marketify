@@ -1,6 +1,9 @@
 interface ProduitBody {
-  name: string;
-  image: string;
-  description: string;
-  prix: number;
+  name: string
+  id_Categorie: string
+  image: string
+  description: string
+  prix: number
 }
+
+export default ProduitBody
