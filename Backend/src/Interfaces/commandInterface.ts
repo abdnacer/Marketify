@@ -1,6 +1,8 @@
 interface CommandBody {
   id_Produit: string
-  total_prix: number,
+  id_Vendeur: string
+  id_Client: string
+  total_prix: number
   quantity: number
 }
 

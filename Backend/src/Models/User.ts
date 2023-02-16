@@ -29,8 +29,7 @@ const UserSchema = new Schema<UserBody>({
   role: {
     type: String,
     ref: "Role"
-  },
-  verification: Boolean
+  }
 })
 
 type Users = InferSchemaType<typeof UserSchema>

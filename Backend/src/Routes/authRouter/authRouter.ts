@@ -14,7 +14,7 @@ class RouterAuth {
   private User() {
     this.router.post('/register', Auth.Register)
     this.router.post('/login', Auth.Login)
-    this.router.get('/reset-password', Auth.ResetPassword)
+    this.router.put('/reset-password', Auth.ResetPassword)
     this.router.get('/logout', Auth.Logout)
   }
 
