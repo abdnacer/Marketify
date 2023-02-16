@@ -1,5 +1,6 @@
 import { InferSchemaType, model, Schema } from "mongoose"
 import CommandBody from "../Interfaces/commandInterface"
+const text = ""
 
 const commandSchema = new Schema<CommandBody>({
   id_Produit: {
