@@ -15,8 +15,7 @@ const UserSchema = new Schema<UserBody>({
     required: true
   },
   address: {
-    type: String,
-    required: true
+    type: String
   },
   email: {
     type: String,
