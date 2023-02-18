@@ -78,7 +78,7 @@ class ControllerAdmin {
     const verifyToken: any = await jwt.verify(token, env.Node_ENV)
     const find_user_id = await User.findById(verifyToken.id)
     if (!find_user_id) return next(new HttpException(400, 'This Compt Not Correct'))
-    
+
     const new_data_user: UpdateWriteOpResult = await User.updateMany({ _id: find_user_id._id }, {
       $set: {
         first_name,
@@ -91,8 +91,30 @@ class ControllerAdmin {
     res.send(new_data_user)
   }
 
-  public AfficherUser = async (req: Request, res: Response, next: NextFunction) => {
-    res.send('Afficher User')
+  public AfficherUserLivreur = async (req: Request, res: Response, next: NextFunction) => {
+    const role_livreur = await Role.find({ name: 'livreur' })
+
+    if (role_livreur[0].name === 'livreur') {
+      const user = await User.find({ role: role_livreur[0].id })
+      res.json(user)
+    }
+    else {
+      return next(new HttpException(400, 'Not Found Role'))
+    }
+
+  }
+
+  public AfficherUserVendeur = async (req: Request, res: Response, next: NextFunction) => {
+    const role_vendeur = await Role.find({ name: 'vendeur' })
+
+    if (role_vendeur[0].name === 'vendeur') {
+      const user = await User.find({ role: role_vendeur[0].id })
+      res.json(user)
+    }
+    else {
+      return next(new HttpException(400, 'Not Found Role'))
+    }
+
   }
 
   public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
