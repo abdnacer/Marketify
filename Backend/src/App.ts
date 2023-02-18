@@ -7,6 +7,7 @@ import { AuthRouter } from './Routes/authRouter/authRouter'
 import { ProduitRouter } from './Routes/userRouter/produitRouter'
 import { CategorieRouter } from './Routes/userRouter/categorieRouter'
 import { CommandsRouter } from './Routes/userRouter/commandRouter'
+import { AdminRouter } from './Routes/userRouter/adminRouter'
 
 class App {
   public app: express.Application
@@ -29,6 +30,7 @@ class App {
 
   private router() {
     this.app.use('/api/auth', AuthRouter)
+    this.app.use('/api/user', AdminRouter)
     this.app.use('/api/user', ProduitRouter)
     this.app.use('/api/user', CategorieRouter)
     this.app.use('/api/user', CommandsRouter)
