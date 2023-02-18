@@ -64,7 +64,31 @@ class ControllerAdmin {
   }
 
   public modifierUser = async (req: Request, res: Response, next: NextFunction) => {
-    res.send('Modifier User')
+    const { first_name, last_name, phone, address, email } = req.body
+
+    if (first_name == '' || last_name == '' || phone == '' || address == '' || email == '') return next(new HttpException(400, 'Please fill all the fields'))
+
+    const userExists = await User.findOne({ email })
+    const phoneExists = await User.findOne({ phone })
+
+    if (userExists) return next(new HttpException(400, 'Email Déja Exists'))
+    if (phoneExists) return next(new HttpException(400, 'Phone Déja Exists'))
+
+    const token: any = Storage('token')
+    const verifyToken: any = await jwt.verify(token, env.Node_ENV)
+    const find_user_id = await User.findById(verifyToken.id)
+    if (!find_user_id) return next(new HttpException(400, 'This Compt Not Correct'))
+    
+    const new_data_user: UpdateWriteOpResult = await User.updateMany({ _id: find_user_id._id }, {
+      $set: {
+        first_name,
+        last_name,
+        phone,
+        address,
+        email
+      }
+    })
+    res.send(new_data_user)
   }
 
   public AfficherUser = async (req: Request, res: Response, next: NextFunction) => {
