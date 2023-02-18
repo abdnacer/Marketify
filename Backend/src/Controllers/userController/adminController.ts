@@ -118,7 +118,13 @@ class ControllerAdmin {
   }
 
   public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-    res.send('Delete User')
+    const token: any = Storage('token')
+
+    if (!token) return next(new HttpException(400, 'You Are Not Logged'))
+
+    const verifyToken: any = await jwt.verify(token, env.Node_ENV)
+    const userDeleted = await User.findByIdAndDelete(verifyToken.id)
+    res.status(200).json(`User ${userDeleted?.first_name} ${userDeleted?.last_name} Deleted`)
   }
 }
 
