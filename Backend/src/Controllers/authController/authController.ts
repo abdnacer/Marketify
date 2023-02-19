@@ -2,9 +2,8 @@ import { Request, Response, NextFunction } from "express"
 // import middlewares
 import HttpException from "../../Services/HttpException"
 import env from '../../utils/validateEnv'
-// import Models
-import User from '../../Models/User'
-import Role from '../../Models/Role'
+// import Model
+import db from "../../Models"
 // import les dependcies
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -17,8 +16,18 @@ class ControllerAuth {
 
     if (first_name == '' || last_name == '' || phone == '' || address == '' || email == '' || password == '' || confirm_password == '') return next(new HttpException(400, 'Please fill all the fields'))
 
-    const userExists = await User.findOne({ email })
-    const phoneExists = await User.findOne({ phone })
+    if (
+      typeof first_name !== 'string' ||
+      typeof last_name !== 'number' ||
+      typeof phone !== 'string' ||
+      typeof address !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      typeof confirm_password !== 'string'
+    ) return next(new HttpException(400, 'Type The One Fields Not Correct'))
+
+    const userExists = await db.User.findOne({ email })
+    const phoneExists = await db.User.findOne({ phone })
 
     if (userExists) return next(new HttpException(400, 'Email Déja Exists'))
     if (phoneExists) return next(new HttpException(400, 'Phone Déja Exists'))
@@ -26,11 +35,11 @@ class ControllerAuth {
     const salt = await bcrypt.genSalt(10)
     const hash_pass = await bcrypt.hash(password, salt)
 
-    const role = await Role.aggregate([
+    const role = await db.Role.aggregate([
       { $match: { name: "client" } }
     ])
 
-    const user = await User.create({
+    const user = await db.User.create({
       first_name,
       last_name,
       phone,
@@ -49,7 +58,12 @@ class ControllerAuth {
 
     if (email == '' || password == '') return next(new HttpException(400, 'Please Fill All The Fields'))
 
-    const user = await User.findOne({ email })
+    if (
+      typeof email !== 'string' ||
+      typeof password !== 'string' 
+    ) return next(new HttpException(400, 'Type The One Fields Not Correct'))
+
+    const user = await db.User.findOne({ email })
 
     if (!user) return next(new HttpException(400, 'Email Not Correct'))
 
@@ -57,7 +71,7 @@ class ControllerAuth {
 
     if (!Pass_Correct) return next(new HttpException(400, 'Password Not Correct'))
 
-    const role = await Role.findById({ _id: user.role })
+    const role = await db.Role.findById({ _id: user.role })
     const token = this.generateToken(user.id)
 
     if (user && Pass_Correct && role && token) {
@@ -79,9 +93,15 @@ class ControllerAuth {
 
     if (last_password == '' || nouveau_password == '' || confirm_password == '') return next(new HttpException(400, 'Please Fill All The Fields'))
 
+    if (
+      typeof last_password !== 'string' ||
+      typeof nouveau_password !== 'string' ||
+      typeof confirm_password !== 'string'
+    ) return next(new HttpException(400, 'Type The One Fields Not Correct'))
+
     const token: any = Storage('token')
     const verifyToken: any = await jwt.verify(token, env.Node_ENV)
-    const find_user_id = await User.findById(verifyToken.id)
+    const find_user_id = await db.User.findById(verifyToken.id)
     if(!find_user_id) return next(new HttpException(400, 'Token Not Correct'))
 
     const Pass_Correct = await bcrypt.compare(last_password, find_user_id.password)
@@ -90,7 +110,7 @@ class ControllerAuth {
     const salt = await bcrypt.genSalt(10)
     const hash_pass = await bcrypt.hash(nouveau_password, salt)
 
-    const newPassword = await User.updateOne({ _id: find_user_id._id }, { $set: { password: hash_pass } })
+    const newPassword = await db.User.updateOne({ _id: find_user_id._id }, { $set: { password: hash_pass } })
     if(newPassword) res.status(200).json('Password Your Changed')
   }
 
