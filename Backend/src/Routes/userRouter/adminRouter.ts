@@ -14,7 +14,8 @@ class RouterAdmin {
   private AdminUser(){
     this.router.post('/admin/user', Admin.AddUser)
     this.router.put('/admin/user', Admin.modifierUser)
-    this.router.get('/admin/user', Admin.AfficherUser)
+    this.router.get('/admin/user/livreur', Admin.AfficherUserLivreur)
+    this.router.get('/admin/user/vendeur', Admin.AfficherUserVendeur)
     this.router.delete('/admin/user', Admin.deleteUser)
   }
 
