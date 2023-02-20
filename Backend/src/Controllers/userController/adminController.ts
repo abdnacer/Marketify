@@ -2,9 +2,8 @@ import { Request, Response, NextFunction } from "express"
 // import middlewares
 import HttpException from "../../Services/HttpException"
 import env from '../../utils/validateEnv'
-// import Models
-import User from '../../Models/User'
-import Role from '../../Models/Role'
+// import Model
+import db from "../../Models"
 // import les dependcies
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -18,9 +17,20 @@ class ControllerAdmin {
 
     if (first_name == '' || last_name == '' || phone == '' || role == '' || address == '' || email == '' || password == '' || confirm_password == '') return next(new HttpException(400, 'Please fill all the fields'))
 
-    const userExists = await User.findOne({ email })
-    const phoneExists = await User.findOne({ phone })
-    const role_Correct = await Role.findById({ _id: role })
+    if (
+      typeof first_name !== 'string' ||
+      typeof last_name !== 'number' ||
+      typeof phone !== 'string' ||
+      typeof address !== 'string' ||
+      typeof role !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      typeof confirm_password !== 'string'
+    ) return next(new HttpException(400, 'Type The One Fields Not Correct'))
+
+    const userExists = await db.User.findOne({ email })
+    const phoneExists = await db.User.findOne({ phone })
+    const role_Correct = await db.Role.findById({ _id: role })
 
     if (userExists) return next(new HttpException(400, 'Email Déja Exists'))
     if (phoneExists) return next(new HttpException(400, 'Phone Déja Exists'))
@@ -30,7 +40,7 @@ class ControllerAdmin {
     const hash_pass = await bcrypt.hash(password, salt)
 
     if (role_Correct.name === 'vendeur') {
-      const user_Vendeur = await User.create({
+      const user_Vendeur = await db.User.create({
         first_name,
         last_name,
         phone,
@@ -45,7 +55,7 @@ class ControllerAdmin {
     }
 
     else if (role_Correct.name === 'livreur') {
-      const user_livreur = await User.create({
+      const user_livreur = await db.User.create({
         first_name,
         last_name,
         phone,
@@ -68,18 +78,26 @@ class ControllerAdmin {
 
     if (first_name == '' || last_name == '' || phone == '' || address == '' || email == '') return next(new HttpException(400, 'Please fill all the fields'))
 
-    const userExists = await User.findOne({ email })
-    const phoneExists = await User.findOne({ phone })
+    if (
+      typeof first_name !== 'string' ||
+      typeof last_name !== 'number' ||
+      typeof phone !== 'string' ||
+      typeof address !== 'string' ||
+      typeof email !== 'string' 
+    ) return next(new HttpException(400, 'Type The One Fields Not Correct'))
+
+    const userExists = await db.User.findOne({ email })
+    const phoneExists = await db.User.findOne({ phone })
 
     if (userExists) return next(new HttpException(400, 'Email Déja Exists'))
     if (phoneExists) return next(new HttpException(400, 'Phone Déja Exists'))
 
     const token: any = Storage('token')
     const verifyToken: any = await jwt.verify(token, env.Node_ENV)
-    const find_user_id = await User.findById(verifyToken.id)
+    const find_user_id = await db.User.findById(verifyToken.id)
     if (!find_user_id) return next(new HttpException(400, 'This Compt Not Correct'))
 
-    const new_data_user: UpdateWriteOpResult = await User.updateMany({ _id: find_user_id._id }, {
+    const new_data_user: UpdateWriteOpResult = await db.User.updateMany({ _id: find_user_id._id }, {
       $set: {
         first_name,
         last_name,
@@ -88,14 +106,15 @@ class ControllerAdmin {
         email
       }
     })
-    res.send(new_data_user)
+    if(!new_data_user) return next(new HttpException(400, 'User Not Updated'))
+    if(new_data_user) res.status(200).json('User Updated')
   }
 
   public AfficherUserLivreur = async (req: Request, res: Response, next: NextFunction) => {
-    const role_livreur = await Role.find({ name: 'livreur' })
+    const role_livreur = await db.Role.find({ name: 'livreur' })
 
     if (role_livreur[0].name === 'livreur') {
-      const user = await User.find({ role: role_livreur[0].id })
+      const user = await db.User.find({ role: role_livreur[0].id })
       res.json(user)
     }
     else {
@@ -105,10 +124,10 @@ class ControllerAdmin {
   }
 
   public AfficherUserVendeur = async (req: Request, res: Response, next: NextFunction) => {
-    const role_vendeur = await Role.find({ name: 'vendeur' })
+    const role_vendeur = await db.Role.find({ name: 'vendeur' })
 
     if (role_vendeur[0].name === 'vendeur') {
-      const user = await User.find({ role: role_vendeur[0].id })
+      const user = await db.User.find({ role: role_vendeur[0].id })
       res.json(user)
     }
     else {
@@ -118,7 +137,13 @@ class ControllerAdmin {
   }
 
   public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-    res.send('Delete User')
+    const token: any = Storage('token')
+
+    if (!token) return next(new HttpException(400, 'You Are Not Logged'))
+
+    const verifyToken: any = await jwt.verify(token, env.Node_ENV)
+    const userDeleted = await db.User.findByIdAndDelete(verifyToken.id)
+    res.status(200).json(`User ${userDeleted?.first_name} ${userDeleted?.last_name} Deleted`)
   }
 }
 

@@ -1,4 +1,4 @@
-import { InferSchemaType, model, mongo, Schema } from "mongoose"
+import { InferSchemaType, model, Schema } from "mongoose"
 import UserBody from "../Interfaces/userInterface"
 
 const UserSchema = new Schema<UserBody>({
