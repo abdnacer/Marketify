@@ -4,6 +4,7 @@ interface CommandBody {
   id_Client: string
   total_prix: number
   quantity: number
+  status: string
 }
 
 export default CommandBody
