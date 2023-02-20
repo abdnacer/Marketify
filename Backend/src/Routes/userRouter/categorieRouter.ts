@@ -13,9 +13,10 @@ class RouterCategorie {
 
   private Categorie() {
     this.router.post('/categories', Categories.addCategories)
-    this.router.put('/categories', Categories.modifierCategories)
+    this.router.put('/categories/:id', Categories.modifierCategories)
+    this.router.get('/categories/user', Categories.afficherCategoriesUser)
     this.router.get('/categories', Categories.afficherCategories)
-    this.router.delete('/categories', Categories.deleteCategories)
+    this.router.delete('/categories/:id', Categories.deleteCategories)
   }
 
   private errorMiddleware(){

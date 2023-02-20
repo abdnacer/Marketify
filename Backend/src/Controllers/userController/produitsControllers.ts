@@ -7,7 +7,6 @@ import HttpException from "../../Services/HttpException"
 import env from '../../utils/validateEnv'
 // import Model
 import db from "../../Models"
-import User from "../../Models/User"
 
 class ControllerProduits {
 
@@ -23,7 +22,6 @@ class ControllerProduits {
       typeof description !== 'string' ||
       typeof prix !== 'string'
     ) return next(new HttpException(400, 'Type The One Fields Not Correct'));
-
 
     const categorieFound = await db.Categories.findById({ _id: id_Categorie })
 
@@ -42,12 +40,12 @@ class ControllerProduits {
   }
 
   public modifierProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const { id_Produit, name, id_Categorie, id_Vendeur, description, prix } = req.body
+    const id = req.params.id
+    const { name, id_Categorie, id_Vendeur, description, prix } = req.body
 
     if (name == '' || id_Categorie == '' || id_Vendeur == '' || description == '' || prix == '') return next(new HttpException(400, 'Please Fill All The Fields'))
 
     if (
-      typeof id_Produit !== 'string' ||
       typeof name !== 'string' ||
       typeof id_Categorie !== 'string' ||
       typeof id_Vendeur !== 'string' ||
@@ -59,7 +57,7 @@ class ControllerProduits {
 
     if (!categorieFound) return next(new HttpException(400, 'Categorie Not Found'))
 
-    const idProduit = await db.Produits.find({ id_Produit })
+    const idProduit = await db.Produits.find({ id })
 
     const produit: UpdateWriteOpResult = await db.Produits.updateMany({ _id: idProduit[0]._id }, {
       $set: {
