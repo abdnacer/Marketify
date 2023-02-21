@@ -17,8 +17,7 @@ import db from "../../Models"
 class ControllerProduits {
 
   public addProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const form = new formidable.IncomingForm()
-    res.send(form)
+    
   }
 
   public AfficherProduits = async (req: Request, res: Response, next: NextFunction) => {
