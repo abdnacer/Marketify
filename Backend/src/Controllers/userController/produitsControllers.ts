@@ -1,7 +1,13 @@
 import { Request, Response, NextFunction } from "express"
+import sharp from 'sharp'
 import { UpdateWriteOpResult } from "mongoose"
 import Storage from 'local-storage'
 import jwt from 'jsonwebtoken'
+import fs from 'fs'
+import formidable from 'formidable';
+import path from "mongoose"
+import join from "lodash"
+import { MongoClient, Binary } from 'mongodb';
 // import Les Middlewares
 import HttpException from "../../Services/HttpException"
 import env from '../../utils/validateEnv'
@@ -11,104 +17,32 @@ import db from "../../Models"
 class ControllerProduits {
 
   public addProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, id_Categorie, id_Vendeur, description, prix } = req.body
+    const form = new formidable.IncomingForm()
 
-    if (name == '' || id_Categorie == '' || id_Vendeur == '' || description == '' || prix == '') return next(new HttpException(400, 'Please Fill All The Fields'))
-
-    if (
-      typeof name !== 'string' ||
-      typeof id_Categorie !== 'string' ||
-      typeof id_Vendeur !== 'string' ||
-      typeof description !== 'string' ||
-      typeof prix !== 'string'
-    ) return next(new HttpException(400, 'Type The One Fields Not Correct'));
-
-    const categorieFound = await db.Categories.findById({ _id: id_Categorie })
-
-    if (!categorieFound) return next(new HttpException(400, 'This Categorie Not Found'))
-
-    const produit = await db.Produits.create({
-      name,
-      id_Categorie,
-      id_Vendeur,
-      description,
-      prix
+    var formfields = form.parse(req, (err, fields, files) => {
+      res.send("within form.parse method, subject field of fields object is: " + fields.subjects);
+      return fields;
     })
-
-    if (produit) res.status(200).json(produit)
-    if (!produit) return next(new HttpException(400, 'Produit Not Created'))
-  }
-
-  public modifierProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id
-    const { name, id_Categorie, id_Vendeur, description, prix } = req.body
-
-    if (name == '' || id_Categorie == '' || id_Vendeur == '' || description == '' || prix == '') return next(new HttpException(400, 'Please Fill All The Fields'))
-
-    if (
-      typeof name !== 'string' ||
-      typeof id_Categorie !== 'string' ||
-      typeof id_Vendeur !== 'string' ||
-      typeof description !== 'string' ||
-      typeof prix !== 'string'
-    ) return next(new HttpException(400, 'Type The One Fields Not Correct'));
-
-    const categorieFound = await db.Categories.findById({ _id: id_Categorie })
-
-    if (!categorieFound) return next(new HttpException(400, 'Categorie Not Found'))
-
-    const idProduit = await db.Produits.find({ id })
-
-    const produit: UpdateWriteOpResult = await db.Produits.updateMany({ _id: idProduit[0]._id }, {
-      $set: {
-        name,
-        id_Categorie,
-        id_Vendeur,
-        description,
-        prix
-      }
-    })
-
-    if (!produit) return next(new HttpException(400, 'Produit Not Updated'))
-    if (produit) res.status(200).json('Produit Updated')
   }
 
   public AfficherProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const produits = await db.Produits.find()
+    const id = "63f3869b52b8f966dd486830"
+    try {
+      const imageBuffer: any = await db.Produits.findOne({ id })
+      // res.send(imageBuffer.image)
+      // const { imageBuffer } = req.body;
 
-    if (!produits) return next(new HttpException(400, 'Produits Not Found'))
-    if (produits) res.status(200).json(produits)
-  }
 
-  public AfficherProduitUser = async (req: Request, res: Response, next: NextFunction) => {
-    const token: any = Storage('token')
-
-    if (!token) return next(new HttpException(400, 'Your Are Not Connected'))
-
-    const verifyToken: any = await jwt.verify(token, env.Node_ENV)
-    const findUser = await db.User.findById(verifyToken.id)
-
-    if (!findUser) return next(new HttpException(400, 'Data User Not Found'))
-
-    const DataProduitUser = await db.Produits.find({ id_Vendeur: findUser._id })
-
-    if (DataProduitUser) return next(new HttpException(400, 'Produit The User Not Found in Collection Produits'))
-    if (DataProduitUser) res.status(200).json(DataProduitUser)
-  }
-
-  public deleteProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const id: any = req.params.id
-
-    if (!id) return next(new HttpException(400, 'Id is Unknown'))
-
-    const findProduit = await db.Produits.findById({ _id: id })
-
-    if (!findProduit) return next(new HttpException(400, 'Produit Not Found'))
-
-    const produitDeleted = await db.Produits.findByIdAndDelete({ _id: id })
-
-    if (!produitDeleted) return next(new HttpException(400, 'Produit Not Deleted'))
-    if (produitDeleted) res.status(200).json('Produit Deleted')
+      const image = await sharp(imageBuffer.image).toBuffer();
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': image.length
+      });
+      res.send(image)
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 }
 
