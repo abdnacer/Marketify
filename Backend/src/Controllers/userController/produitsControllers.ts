@@ -18,11 +18,7 @@ class ControllerProduits {
 
   public addProduits = async (req: Request, res: Response, next: NextFunction) => {
     const form = new formidable.IncomingForm()
-
-    var formfields = form.parse(req, (err, fields, files) => {
-      res.send("within form.parse method, subject field of fields object is: " + fields.subjects);
-      return fields;
-    })
+    res.send(form)
   }
 
   public AfficherProduits = async (req: Request, res: Response, next: NextFunction) => {
