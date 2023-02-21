@@ -1,6 +1,7 @@
 import express from 'express'
 import Auth from '../../Controllers/authController/authController'
 import errorMiddleware from '../../Middlewares/error.middlewre'
+import permission from '../../Middlewares/permission'
 
 class RouterAuth {
   public router: express.Router
@@ -12,10 +13,10 @@ class RouterAuth {
   }
 
   private User() {
-    this.router.post('/register', Auth.Register)
-    this.router.post('/login', Auth.Login)
-    this.router.put('/reset-password', Auth.ResetPassword)
-    this.router.get('/logout', Auth.Logout)
+    this.router.post('/register', permission.authPermission, Auth.Register)
+    this.router.post('/login', permission.authPermission, Auth.Login)
+    this.router.put('/reset-password', permission.userPermission, Auth.ResetPassword)
+    this.router.get('/logout', permission.authPermission, Auth.Logout)
   }
 
   private errorMiddleware() {

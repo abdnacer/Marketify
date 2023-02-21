@@ -13,10 +13,10 @@ class RouterProduits {
 
   private Produit() {
     this.router.post('/produits', Produits.addProduits)
-    this.router.put('/produits', Produits.modifierProduits) 
+    // this.router.put('/produits/:id', Produits.modifierProduits) 
     this.router.get('/produits', Produits.AfficherProduits)
-    this.router.get('/produits/user', Produits.AfficherProduitUser)
-    this.router.delete('/produits/:id', Produits.deleteProduits)
+    // this.router.get('/produits/user', Produits.AfficherProduitUser)
+    // this.router.delete('/produits/:id', Produits.deleteProduits)
   }
 
   private errorMiddleware() {

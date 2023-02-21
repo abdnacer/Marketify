@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
+import cors from 'cors'
 import { db_conex } from './Config/db'
 import './Models'
 import env from './utils/validateEnv'
@@ -11,7 +12,7 @@ import { AdminRouter } from './Routes/userRouter/adminRouter'
 
 class App {
   public app: express.Application
-
+  
   constructor() {
     this.app = express()
     this.initializeMiddlewares()
@@ -20,8 +21,9 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(express.json());
+    this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
+    this.app.use(cors())
   }
 
   private db() {
