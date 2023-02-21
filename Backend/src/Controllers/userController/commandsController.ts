@@ -1,12 +1,27 @@
 import { Request, Response, NextFunction } from "express";
-
+import HttpException from "../../Services/HttpException";
+import db from '../../Models'
 class ControllerCommands {
 
   public addCommands = async (req: Request, res: Response, next: NextFunction) => {
-    // pour envoyer un message d'erreur on va ecrire cette methode
-    // next(new HttpException(status, 'message'))
-    // par example
-    // return next(new HttpException(400, 'Please fill all the fields'))
+    
+    const { id_Produit, id_Vendeur, id_Client, total_prix, quantity } = req.body;
+    if (
+      id_Produit == '' ||
+      id_Vendeur == '' ||
+      id_Client == '' ||
+      total_prix == '' ||
+      quantity == '') {
+      return next(new HttpException(400, 'fill all fields'))
+    }
+    const data = await db.Commands.create({
+      id_Produit,
+      id_Vendeur,
+      id_Client,
+      total_prix,
+      quantity
+    })
+    if (!data) { return next(new HttpException(400, 'commande not created')) }
     res.send('Create Commands')
   }
 

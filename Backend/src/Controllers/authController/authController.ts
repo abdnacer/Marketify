@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken'
 import Storage from 'local-storage'
 
 class ControllerAuth {
+//  Register 
 
   public Register = async (req: Request, res: Response, next: NextFunction) => {
     const { first_name, last_name, phone, address, email, password, confirm_password } = req.body
@@ -53,6 +54,9 @@ class ControllerAuth {
     if (!user) return next(new HttpException(400, 'Invalid User Data'))
   }
 
+
+  //  login  
+
   public Login = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body
 
@@ -88,6 +92,8 @@ class ControllerAuth {
     }
   }
 
+  //  Reset password 
+  
   public ResetPassword = async (req: Request, res: Response, next: NextFunction) => {
     const { last_password, nouveau_password, confirm_password } = req.body
 

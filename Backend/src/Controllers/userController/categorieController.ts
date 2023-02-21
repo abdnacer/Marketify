@@ -8,7 +8,7 @@ class ControllerCategories {
     // par example
     // return next(new HttpException(400, 'Please fill all the fields'))
     res.send('Create Categories')
-  }
+  } 
 
   public modifierCategories = async (req: Request, res: Response, next: NextFunction) => {
     res.send('Modifier Categories')
