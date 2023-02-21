@@ -9,5 +9,4 @@ const statussSchema = new Schema<statusBody>({
 })
 
 type Status = InferSchemaType<typeof statussSchema>
-
 export default model<Status>("Status", statussSchema)
