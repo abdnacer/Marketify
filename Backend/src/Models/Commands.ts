@@ -21,6 +21,10 @@ const commandSchema = new Schema<CommandBody>({
   quantity: {
     type: Number,
     required: true
+  },
+  status: {
+    type: String,
+    ref: "Status"
   }
 })
 

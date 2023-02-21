@@ -19,7 +19,7 @@ class ControllerAdmin {
 
     if (
       typeof first_name !== 'string' ||
-      typeof last_name !== 'number' ||
+      typeof last_name !== 'string' ||
       typeof phone !== 'string' ||
       typeof address !== 'string' ||
       typeof role !== 'string' ||
@@ -30,16 +30,16 @@ class ControllerAdmin {
 
     const userExists = await db.User.findOne({ email })
     const phoneExists = await db.User.findOne({ phone })
-    const role_Correct = await db.Role.findById({ _id: role })
+    const roleCorrect = await db.Role.findById({ _id: role })
 
     if (userExists) return next(new HttpException(400, 'Email Déja Exists'))
     if (phoneExists) return next(new HttpException(400, 'Phone Déja Exists'))
-    if (!role_Correct) return next(new HttpException(400, 'Role Id Not Correct'))
+    if (!roleCorrect) return next(new HttpException(400, 'Role Id Not Correct'))
 
     const salt = await bcrypt.genSalt(10)
     const hash_pass = await bcrypt.hash(password, salt)
 
-    if (role_Correct.name === 'vendeur') {
+    if (roleCorrect.name === 'vendeur') {
       const user_Vendeur = await db.User.create({
         first_name,
         last_name,
@@ -50,11 +50,19 @@ class ControllerAdmin {
         role: role
       })
 
-      if (user_Vendeur) res.status(200).json({ user_Vendeur })
       if (!user_Vendeur) return next(new HttpException(400, 'Invalid User Data'))
+      
+      if (user_Vendeur) res.status(200).json({ 
+        first_name: first_name,
+        last_name: last_name,
+        phone: phone,
+        address: address,
+        email: email,
+        role: roleCorrect.name
+       })
     }
 
-    else if (role_Correct.name === 'livreur') {
+    else if (roleCorrect.name === 'livreur') {
       const user_livreur = await db.User.create({
         first_name,
         last_name,
@@ -65,8 +73,16 @@ class ControllerAdmin {
         role: role
       })
 
-      if (user_livreur) res.status(200).json({ user_livreur })
       if (!user_livreur) return next(new HttpException(400, 'Invalid User Data'))
+
+      if (user_livreur) res.status(200).json({ 
+        first_name: first_name,
+        last_name: last_name,
+        phone: phone,
+        address: address,
+        email: email,
+        role: roleCorrect.name
+       })
     }
     else {
       return next(new HttpException(400, "Your Role doesn't exists"))
@@ -83,7 +99,7 @@ class ControllerAdmin {
       typeof last_name !== 'number' ||
       typeof phone !== 'string' ||
       typeof address !== 'string' ||
-      typeof email !== 'string' 
+      typeof email !== 'string'
     ) return next(new HttpException(400, 'Type The One Fields Not Correct'))
 
     const userExists = await db.User.findOne({ email })
@@ -106,8 +122,8 @@ class ControllerAdmin {
         email
       }
     })
-    if(!new_data_user) return next(new HttpException(400, 'User Not Updated'))
-    if(new_data_user) res.status(200).json('User Updated')
+    if (!new_data_user) return next(new HttpException(400, 'User Not Updated'))
+    if (new_data_user) res.status(200).json('User Updated')
   }
 
   public AfficherUserLivreur = async (req: Request, res: Response, next: NextFunction) => {
