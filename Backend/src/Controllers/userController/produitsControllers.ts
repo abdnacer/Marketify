@@ -1,43 +1,89 @@
 import { Request, Response, NextFunction } from "express"
-import sharp from 'sharp'
-import { UpdateWriteOpResult } from "mongoose"
-import Storage from 'local-storage'
-import jwt from 'jsonwebtoken'
-import fs from 'fs'
-import formidable from 'formidable';
-import path from "mongoose"
-import join from "lodash"
-import { MongoClient, Binary } from 'mongodb';
-// import Les Middlewares
-import HttpException from "../../Services/HttpException"
-import env from '../../utils/validateEnv'
-// import Model
-import db from "../../Models"
+import HttpException from "../../Services/HttpException";
+import db from "../../Models";
+import imageDelete from "../../utils/images/deleteFile"; 
 
 class ControllerProduits {
 
   public addProduits = async (req: Request, res: Response, next: NextFunction) => {
+    const {name, id_Categorie, id_Vendeur, description, prix} = req.body
+    const images = req.file?.filename
+
+    if(name == '' || id_Categorie == '' || id_Vendeur == '' || description == '' || prix == '') return next(new HttpException(400, 'Please Fill All The Fields'))
+
+    const newProduit = {
+      name: name,
+      id_Categorie: id_Categorie,
+      id_Vendeur: id_Vendeur,
+      description: description,
+      prix: prix,
+      images: images
+    }
     
-  }
+    const isformfield = Object.values(newProduit).every(value => {
+      if (value) {
+        return true
+      }
+      else {
+        return false
+      }
+    })
+
+    if(isformfield) {
+      await db.Produits.create(newProduit)
+      .then(() => res.json('Product Added'))
+      .catch(() => new HttpException(400, 'Produit is Not Added'))
+    }
+    else new HttpException(400, 'Invalid Data')
+  };
 
   public AfficherProduits = async (req: Request, res: Response, next: NextFunction) => {
-    const id = "63f3869b52b8f966dd486830"
-    try {
-      const imageBuffer: any = await db.Produits.findOne({ id })
-      // res.send(imageBuffer.image)
-      // const { imageBuffer } = req.body;
+    const allProducts = await db.Produits.find()
+    res.send(allProducts)
+  }
 
+  public modifierProduits = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = req.params
+    const {name, id_Categorie, id_Vendeur, description, prix} = req.body
+    const images = req.file?.filename
+    
+    const findId: any = await db.Produits.findById({_id: id})
+    
+    if(!findId) return next(new HttpException(400, 'Id Not Found'))
 
-      const image = await sharp(imageBuffer.image).toBuffer();
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
-      });
-      res.send(image)
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Internal Server Error');
+    if(name == '' || id_Categorie == '' || id_Vendeur == '' || description == '' || prix == '') return next(new HttpException(400, 'Please Fill All The Fields'))
+
+    const updateProduit = {
+      name: name,
+      id_Categorie: id_Categorie,
+      id_Vendeur: id_Vendeur,
+      description: description,
+      prix: prix,
+      images: images
     }
+
+    if(updateProduit) {
+      await db.Produits.findByIdAndUpdate({_id: id}, updateProduit)
+      .then(() => res.send('Product Updated'))
+      .catch(() => next(new HttpException(400, 'Product Not Updated')))
+    }
+    else next(new HttpException(400, 'Invalid Data'))
+  }
+
+  public deleteProduits = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = req.params
+
+    const findId: any = await db.Produits.findById({_id: id})
+
+    if(!findId) return next(new HttpException(400, 'Id Not Found'))
+
+    const imagePath = findId.images
+
+    imageDelete.deleteFile(imagePath)
+
+    await db.Produits.findOneAndDelete({_id: id})
+    .then(() => res.json('Produit Deleted'))
+    .catch(() => next(new HttpException(400, 'Produit Not Deleted')))
   }
 }
 

@@ -2,6 +2,13 @@ import express from 'express'
 import Produits from '../../Controllers/userController/produitsControllers'
 import errorMiddleware from '../../Middlewares/error.middlewre'
 
+import multer from 'multer'
+// import {upload} from '../../utils/images/imageUpload'
+
+
+// const upload = require('../../outils/imageUpload')
+import fileUpload from '../../utils/images/imageUpload'
+
 class RouterProduits {
   public router: express.Router
 
@@ -12,11 +19,14 @@ class RouterProduits {
   }
 
   private Produit() {
-    this.router.post('/produits', Produits.addProduits)
-    // this.router.put('/produits/:id', Produits.modifierProduits) 
+    this.router.post('/produits', fileUpload.single('images'),  Produits.addProduits)
     this.router.get('/produits', Produits.AfficherProduits)
+    this.router.put('/produits/:id', fileUpload.single('images'), Produits.modifierProduits) 
+    this.router.delete('/produits/:id', Produits.deleteProduits)
+
+
+
     // this.router.get('/produits/user', Produits.AfficherProduitUser)
-    // this.router.delete('/produits/:id', Produits.deleteProduits)
   }
 
   private errorMiddleware() {
