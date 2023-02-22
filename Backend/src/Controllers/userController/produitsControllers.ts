@@ -42,6 +42,10 @@ class ControllerProduits {
     res.send(allProducts)
   }
 
+  public AfficherProduitUser = async (req: Request, res: Response, next: NextFunction) => {
+    res.send('Afficher Product User')
+  }
+
   public modifierProduits = async (req: Request, res: Response, next: NextFunction) => {
     const {id} = req.params
     const {name, id_Categorie, id_Vendeur, description, prix} = req.body

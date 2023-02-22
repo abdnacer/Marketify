@@ -21,12 +21,12 @@ class RouterProduits {
   private Produit() {
     this.router.post('/produits', fileUpload.single('images'),  Produits.addProduits)
     this.router.get('/produits', Produits.AfficherProduits)
+    this.router.get('/produits/user', Produits.AfficherProduitUser)
     this.router.put('/produits/:id', fileUpload.single('images'), Produits.modifierProduits) 
     this.router.delete('/produits/:id', Produits.deleteProduits)
 
 
 
-    // this.router.get('/produits/user', Produits.AfficherProduitUser)
   }
 
   private errorMiddleware() {
