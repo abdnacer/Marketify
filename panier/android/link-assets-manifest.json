@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Lemon-Regular.ttf",
+      "sha1": "fe9ce77ce5b6f7a1febe01914da990e4cbb44133"
+    },
+    {
+      "path": "src/assets/fonts/Nosifer-Regular.ttf",
+      "sha1": "e27f888879d17a98dab04c2b8b18d58098a9226f"
+    },
+    {
+      "path": "src/assets/Icons/start.png",
+      "sha1": "855890be645bc2bec3e996eb11620480d3966b3d"
+    },
+    {
+      "path": "src/assets/window.png",
+      "sha1": "bc6e37a66afba5f564a35a129d553526f968ac80"
+    }
+  ]
+}
