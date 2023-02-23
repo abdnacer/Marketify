@@ -1,17 +1,21 @@
-import { InferSchemaType, model, Schema } from "mongoose";
-import ProduitBody from "../Interfaces/produitInterface";
+import { InferSchemaType, model, Schema } from "mongoose"
+import ProduitBody from "../Interfaces/produitInterface"
 
 const ProduitSchema = new Schema<ProduitBody>({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   id_Categorie: {
     type: String,
     ref: "Categories"
   },
-  image: {
+  id_Vendeur: {
     type: String,
+    ref: "User"
+  },
+  images: {
+    type: String
   },
   description: {
     type: String,

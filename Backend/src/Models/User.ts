@@ -1,4 +1,4 @@
-import { InferSchemaType, model, mongo, Schema } from "mongoose"
+import { InferSchemaType, model, Schema } from "mongoose"
 import UserBody from "../Interfaces/userInterface"
 
 const UserSchema = new Schema<UserBody>({
@@ -15,8 +15,7 @@ const UserSchema = new Schema<UserBody>({
     required: true
   },
   address: {
-    type: String,
-    required: true
+    type: String
   },
   email: {
     type: String,
@@ -29,8 +28,7 @@ const UserSchema = new Schema<UserBody>({
   role: {
     type: String,
     ref: "Role"
-  },
-  verification: Boolean
+  }
 })
 
 type Users = InferSchemaType<typeof UserSchema>

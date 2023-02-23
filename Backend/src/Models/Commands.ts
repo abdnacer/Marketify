@@ -6,6 +6,14 @@ const commandSchema = new Schema<CommandBody>({
     type: String,
     ref: "Produits"
   },
+  id_Vendeur: {
+    type: String,
+    ref: "Users"
+  },
+  id_Client: {
+    type: String,
+    ref: "Users"
+  },
   total_prix: {
     type: Number,
     required: true
@@ -13,6 +21,10 @@ const commandSchema = new Schema<CommandBody>({
   quantity: {
     type: Number,
     required: true
+  },
+  status: {
+    type: String,
+    ref: "Status"
   }
 })
 
