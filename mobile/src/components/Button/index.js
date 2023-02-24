@@ -1,20 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity,Image, View } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient';
-import StartIcon from '../assets/Icons/start.png'
+import StartIcon from '../../assets/Icons/start.png'
 
 
-const Button = ({ onPress, title }) => {
+const Button = (props) => {
     return (
-        <TouchableOpacity onPress={onPress}>
-            <LinearGradient colors={['#FAFF01', '#D2FF01']} style={styles.button}>
+        <TouchableOpacity onPress={props.onPress}>
+            <LinearGradient colors={['#2ecc71', '#2ecc71']} style={styles.button}>
                 <Text style={styles.title}>
-                    {title}  <Image style ={ styles.icon} source={StartIcon} />
-                
+                    {props.title}  <Image style ={ styles.icon} source={StartIcon} />
                 </Text>
             </LinearGradient>
-          
-
         </TouchableOpacity>
     )
 }
@@ -33,11 +30,11 @@ const styles = StyleSheet.create({
         marginTop:25,
         alignSelf:'flex-start',
         marginStart : 15,
-          shadowColor: 'yellow',
-    shadowOffset: { width: 33, height: 14 },
-    shadowOpacity: 5,
-    shadowRadius: 5,
-    elevation: 30,
+        shadowColor: 'black',
+        shadowOffset: { width: 33, height: 14 },
+        shadowOpacity: 5,
+        shadowRadius: 5,
+        elevation: 30,
 
     },
     title: {

@@ -2,7 +2,6 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import { db_conex } from './Config/db'
-import path from 'path';
 import './Models'
 import env from './utils/validateEnv'
 import { AuthRouter } from './Routes/authRouter/authRouter'

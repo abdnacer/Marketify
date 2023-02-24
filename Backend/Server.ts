@@ -1,3 +1,4 @@
-import app from './src/app'
+import app from './src/App'
+
 
 new app().listen()

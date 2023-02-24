@@ -1,10 +1,10 @@
 import { StyleSheet, ScrollView,Image,Text, View } from 'react-native'
 import React from 'react'
-import Gap from '../Gap'
-import Button from '../Button'
-import Input from '../Input'
-import Logo from '../assets/logo.png'
-import { colors } from '../res'
+import Gap from '../../components/Gap'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
+import Logo from '../../assets/logo.png'
+import { colors } from '../../resources'
 
 
 const Register = ({navigation}) => {

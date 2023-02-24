@@ -1,8 +1,8 @@
 import { StyleSheet, Text, Image, View } from 'react-native'
 import React from 'react'
-import Window from '../assets/window.png'
-import Button from '../Button'
-import { colors, fonts } from '../res'
+import Window from '../../assets/window.png'
+import Button from '../../components/Button'
+import { colors, fonts } from '../../resources'
 
 const GetStarted = ({navigation}) => {
   return (

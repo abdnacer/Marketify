@@ -1,19 +1,17 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import orange from '../assets/orange.png'
-import Moin from '../assets/Icons/moin.png'
-import Plus from '../assets/Icons/Plus.png'
-import Close from '../assets/Icons/Close.png'
-import { colors, fonts } from '../res'
-import Back from '../assets/Icons/back.png'
-import Button from '../Button'
-
+import orange from '../../assets/orange.png'
+import Moin from '../../assets/Icons/moin.png'
+import Plus from '../../assets/Icons/Plus.png'
+import Close from '../../assets/Icons/Close.png'
+import { colors, fonts } from '../../resources'
+import Back from '../../assets/Icons/back.png'
+import Button from '../../components/Button'
 
 const Panier = ({ navigation }) => {
   return (
     <View>
       <View style={{ flexDirection: 'row', marginTop: 10 }}>
-
         <TouchableOpacity onPress={() => navigation.replace('products')}>
           <Image source={Back} style={{ width: 25, height: 25, margin: 8 }} />
         </TouchableOpacity>
@@ -38,7 +36,6 @@ const Panier = ({ navigation }) => {
           </View>
 
           <View style={styles.Price}>
-            {/* <View>  <Image style={styles.Image} source={Close} /> </View> */}
             <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
           </View>
 
