@@ -15,7 +15,6 @@ multer({
   dest: 'src/public'
 })
 
-
 class App {
   public app: express.Application
   
@@ -28,9 +27,8 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: false }))
     this.app.use(cors())
-    // this.app.use(express.static(path.join(__dirname, 'public')));
+    this.app.use(express.urlencoded({ extended: false }))
   }
 
   private db() {
@@ -39,10 +37,10 @@ class App {
 
   private router() {
     this.app.use('/api/auth', AuthRouter)
-    this.app.use('/api/user', AdminRouter)
-    this.app.use('/api/user', ProduitRouter)
-    this.app.use('/api/user', CategorieRouter)
-    this.app.use('/api/user', CommandsRouter)
+    // this.app.use('/api/user', AdminRouter)
+    // this.app.use('/api/user', ProduitRouter)
+    // this.app.use('/api/user', CategorieRouter)
+    // this.app.use('/api/user', CommandsRouter)
   }
 
   public listen() {
