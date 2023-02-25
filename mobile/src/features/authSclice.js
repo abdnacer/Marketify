@@ -12,8 +12,8 @@ const authSlice = createSlice({
     reducers: {
         LOGIN_SUCCESS: (state, action) => {
             state.isLogin = true
-            state.user = action.payload.user
-            state.token = action.payload.token
+            // state.user = action.payload.user
+            // state.token = action.payload.token
         },
         LOGIN_FAILED: (state, action) => {
             state.isLogin = false
