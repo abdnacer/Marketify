@@ -14,7 +14,6 @@ export default Input
 const styles = StyleSheet.create({
     input: {
         alignSelf: 'center',
-        // backgroundColor: '#FFF',
         width: 320,
         fontWeight:'bold',
         height: 40,

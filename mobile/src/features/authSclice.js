@@ -11,14 +11,22 @@ const authSlice = createSlice({
     },
     reducers: {
         LOGIN_SUCCESS: (state, action) => {
-            state.isLogin = true
-            // state.user = action.payload.user
-            // state.token = action.payload.token
+            return {
+                ...state,
+                isLogin: true,
+                message: 'LOGIN SUCCESS',
+                user: action.payload.user,
+                token: action.payload.token
+            }
         },
         LOGIN_FAILED: (state, action) => {
-            state.isLogin = false
-            state.user = null
-            state.token = null
+            return {
+                ...state,
+                isLogin: false,
+                message: 'LOGIN Not SUCCESS',
+                user: null,
+                token: null
+            }
         },
         LOGOUT: (state, action) => {
             state.user = null
@@ -28,6 +36,6 @@ const authSlice = createSlice({
     }
 })
 
-export const {LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT } = authSlice
+export const {LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT } = authSlice.actions
 
 export default authSlice
