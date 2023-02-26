@@ -6,8 +6,10 @@ import Orange from '../../assets/orange.png'
 import WaterMelon from '../../assets/watermelon.png'
 import Panier from '../../assets/Icons/Plus.png'
 import Header from '../../components/Header'
+import axios from 'axios'
 
 const Product = ({navigation}) => {
+
     return (
         <View style={{}}>
         <Header login cart />

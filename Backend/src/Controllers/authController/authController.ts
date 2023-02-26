@@ -13,61 +13,57 @@ class ControllerAuth {
   //  Register
 
   public Register = async (req: Request, res: Response, next: NextFunction) => {
-    const {
-      first_name,
-      last_name,
-      phone,
-      address,
-      email,
-      password,
-      confirm_password,
-    } = req.body;
+    const {body } = req;
 
     if (
-      first_name == "" ||
-      last_name == "" ||
-      phone == "" ||
-      address == "" ||
-      email == "" ||
-      password == "" ||
-      confirm_password == ""
+      body.first_name == "" ||
+      body.last_name == "" ||
+      body.phone == "" ||
+      body.address == "" ||
+      body.email == "" ||
+      body.password == "" ||
+      body.confirm_password == ""
     )
-      return next(new HttpException(400, "Please fill all the fields"));
+      res.json("Please fill all the fields");
+    else {
+      // if (
+      //   body.password != body.confirm_password
+      // )
+      // res.json("Password Not Matched")
+      // else {
+        const userExists = await db.User.findOne({ email: body.email });
+        const phoneExists = await db.User.findOne({ phone: body.phone });
 
-    if (
-      typeof first_name !== "string" ||
-      typeof last_name !== "number" ||
-      typeof phone !== "string" ||
-      typeof address !== "string" ||
-      typeof email !== "string" ||
-      typeof password !== "string" ||
-      typeof confirm_password !== "string"
-    )
-      return next(new HttpException(400, "Type The One Fields Not Correct"));
+        if (userExists) res.json("Email Déja Exists")
+        else {
+          if (phoneExists)
+          res.json("Phone Déja Exists")
+          else {
+            const salt = await bcrypt.genSalt(10);
+            const hash_pass = await bcrypt.hash(body.password, salt);
 
-    const userExists = await db.User.findOne({ email });
-    const phoneExists = await db.User.findOne({ phone });
+            const role = await db.Role.aggregate([
+              { $match: { name: "client" } },
+            ]);
 
-    if (userExists) return next(new HttpException(400, "Email Déja Exists"));
-    if (phoneExists) return next(new HttpException(400, "Phone Déja Exists"));
+            const user = await db.User.create({
+              first_name: body.first_name,
+              last_name: body.last_name,
+              phone: body.phone,
+              address: body.address,
+              email: body.email,
+              password: hash_pass,
+              role: role[0]._id,
+            });
 
-    const salt = await bcrypt.genSalt(10);
-    const hash_pass = await bcrypt.hash(password, salt);
-
-    const role = await db.Role.aggregate([{ $match: { name: "client" } }]);
-
-    const user = await db.User.create({
-      first_name,
-      last_name,
-      phone,
-      address,
-      email,
-      password: hash_pass,
-      role: role[0]._id,
-    });
-
-    if (user) res.status(200).json({ user });
-    if (!user) return next(new HttpException(400, "Invalid User Data"));
+            if (user) res.json({ user });
+            else {
+              res.json("Invalid User Data")
+            }
+          }
+        }
+      // }
+    }
   };
 
   //  login
@@ -75,15 +71,13 @@ class ControllerAuth {
   public Login = async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
 
-    if (body.email == "" || body.password == "") return res.json("Please Fill All The Fields");
-    
+    if (body.email == "" || body.password == "")
+      return res.json("Please Fill All The Fields");
     else {
-
       const user: any = await db.User.findOne({ email: body.email });
 
       if (!user) return res.json("Email Not Found");
       else {
-
         const Pass_Correct = await bcrypt.compare(body.password, user.password);
 
         if (!Pass_Correct) return res.json("Password Not Correct");
@@ -94,12 +88,14 @@ class ControllerAuth {
           if (user && Pass_Correct && role && token) {
             Storage("token", token);
             res.json({
-              first_name: user.first_name,
-              last_name: user.last_name,
-              address: user.address,
-              phone: user.phone,
-              email: user.email,
-              role: role.name,
+              user: {
+                first_name: user.first_name,
+                last_name: user.last_name,
+                address: user.address,
+                phone: user.phone,
+                email: user.email,
+                role: role.name,
+              },
               token: token,
             });
           } else {

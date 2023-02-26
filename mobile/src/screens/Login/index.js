@@ -1,42 +1,60 @@
-import {StyleSheet, Image, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Image, Text, View, ToastAndroid} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import Input from '../../components/Input';
 import Gap from '../../components/Gap';
 import Logo from '../../assets/logo.png';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
 import {useSelector, useDispatch} from 'react-redux';
-import { LOGIN_SUCCESS } from '../../features/authSclice';
+import {LOGIN_FAILED, LOGIN_SUCCESS} from '../../features/authSclice';
 import axios from 'axios';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
+
   const [user, setUser] = useState({email: '', password: ''});
+  const [value, setValue] = useState('');
   const dispatch = useDispatch();
 
-  const select = useSelector(state => state.auth.isLogin);
-  console.log(select)
+  const select = useSelector(state => state.auth);
 
   const handleLogin = async () => {
     await axios
-      .post('http://172.30.208.1:5000/api/auth/login', user)
+      .post('http://172.30.208.1:5001/api/auth/login', user)
       .then(res => {
-        dispatch(LOGIN_SUCCESS(res.data));
+        if (!res.data.token) {
+          dispatch(LOGIN_FAILED(res.data));
+          ToastAndroid.showWithGravity(
+            res.data,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        } else {
+          dispatch(LOGIN_SUCCESS(res.data));
+          AsyncStorage.setItem('user', JSON.stringify(res.data.user));
+          AsyncStorage.setItem('token', res.data.token);
+        }
       })
       .catch(err => {
         console.log(err);
       });
   };
 
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     const valuex = await AsyncStorage.getItem('user');
+  //     setValue(JSON.parse(valuex));
+  //   };
+
+  //   fetchUser();
+  // }, []);
+
+  // console.log('Objet utilisateur récupéré avec succès : ', value);
+
   return (
     <View>
       <Header back />
       <Image source={Logo} style={styles.image} />
-      {/* <Text>{select.id}</Text>
-      <Text>{select.email}</Text>
-      <Text>{select.token}</Text> */}
       <Input
         placeholder="Email"
         onChangeText={value => setUser({...user, email: value})}
@@ -78,5 +96,5 @@ const styles = StyleSheet.create({
   },
   containerBottom: {
     alignSelf: 'center',
-  },
+  },extAlign: 'center',
 });
