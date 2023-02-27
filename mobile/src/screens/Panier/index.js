@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import orange from '../../assets/orange.png'
 import Moin from '../../assets/Icons/moin.png'
 import Plus from '../../assets/Icons/Plus.png'
@@ -7,8 +7,15 @@ import Close from '../../assets/Icons/Close.png'
 import { colors, fonts } from '../../resources'
 import Back from '../../assets/Icons/back.png'
 import Button from '../../components/Button'
+import Counter from '../../components/Counter'
 
 const Panier = ({ navigation }) => {
+
+  const [TotalItem, setTotalItem] = useState(1)
+  const onCounterChange = value => {
+    setTotalItem(value)
+  }
+
   return (
     <View>
       <View style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -19,6 +26,7 @@ const Panier = ({ navigation }) => {
       </View>
 
       <ScrollView showsHorizontalScrollIndicator={false} style={{ height: 300 }}>
+
         <View style={styles.Product}>
 
           <View style={styles.FirstPart}>
@@ -28,10 +36,55 @@ const Panier = ({ navigation }) => {
           <View style={styles.SecondPart}>
             <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
             <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
+            {/* counter */}
             <View style={styles.ContainerCounter}>
-              <Image style={styles.Moin} source={Moin} />
-              <Text style={{ fontWeight: 'bold', fontSize: 20, marginEnd: 5, marginStart: 5 }}>1</Text>
-              <Image style={styles.Plus} source={Plus} />
+              <Counter onValueChange={onCounterChange} />
+            </View>
+          </View>
+
+          <View style={styles.Price}>
+            <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
+          </View>
+
+          <Image style={styles.CloseIcon} source={Close} />
+        </View>
+        {/* 2 */}
+
+
+        <View style={styles.Product}>
+
+          <View style={styles.FirstPart}>
+            <Image style={styles.Image} source={orange} />
+          </View>
+
+          <View style={styles.SecondPart}>
+            <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
+            <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
+            {/* counter */}
+            <View style={styles.ContainerCounter}>
+              <Counter onValueChange={onCounterChange} />
+            </View>
+          </View>
+
+          <View style={styles.Price}>
+            <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
+          </View>
+
+          <Image style={styles.CloseIcon} source={Close} />
+        </View>
+        {/* 3 */}
+        <View style={styles.Product}>
+
+          <View style={styles.FirstPart}>
+            <Image style={styles.Image} source={orange} />
+          </View>
+
+          <View style={styles.SecondPart}>
+            <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
+            <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
+            {/* counter */}
+            <View style={styles.ContainerCounter}>
+              <Counter onValueChange={onCounterChange} />
             </View>
           </View>
 
@@ -42,106 +95,12 @@ const Panier = ({ navigation }) => {
           <Image style={styles.CloseIcon} source={Close} />
         </View>
 
-        <View style={styles.Product}>
-
-          <View style={styles.FirstPart}>
-            <Image style={styles.Image} source={orange} />
-
-          </View>
-
-          <View style={styles.SecondPart}>
-            <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
-            <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
-            <View style={styles.ContainerCounter}>
-              <Image style={styles.Moin} source={Moin} />
-              <Text style={{ fontWeight: 'bold', fontSize: 20, marginEnd: 5, marginStart: 5 }}>1</Text>
-              <Image style={styles.Plus} source={Plus} />
-            </View>
-          </View>
-
-          <View style={styles.Price}>
-            {/* <View>  <Image style={styles.Image} source={Close} /> </View> */}
-            <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
-          </View>
-
-          <Image style={styles.CloseIcon} source={Close} />
-        </View>
 
 
-        <View style={styles.Product}>
 
-          <View style={styles.FirstPart}>
-            <Image style={styles.Image} source={orange} />
 
-          </View>
 
-          <View style={styles.SecondPart}>
-            <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
-            <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
-            <View style={styles.ContainerCounter}>
-              <Image style={styles.Moin} source={Moin} />
-              <Text style={{ fontWeight: 'bold', fontSize: 20, marginEnd: 5, marginStart: 5 }}>1</Text>
-              <Image style={styles.Plus} source={Plus} />
-            </View>
-          </View>
 
-          <View style={styles.Price}>
-            {/* <View>  <Image style={styles.Image} source={Close} /> </View> */}
-            <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
-          </View>
-
-          <Image style={styles.CloseIcon} source={Close} />
-        </View>
-
-        <View style={styles.Product}>
-
-          <View style={styles.FirstPart}>
-            <Image style={styles.Image} source={orange} />
-
-          </View>
-
-          <View style={styles.SecondPart}>
-            <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
-            <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
-            <View style={styles.ContainerCounter}>
-              <Image style={styles.Moin} source={Moin} />
-              <Text style={{ fontWeight: 'bold', fontSize: 20, marginEnd: 5, marginStart: 5 }}>1</Text>
-              <Image style={styles.Plus} source={Plus} />
-            </View>
-          </View>
-
-          <View style={styles.Price}>
-            {/* <View>  <Image style={styles.Image} source={Close} /> </View> */}
-            <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
-          </View>
-
-          <Image style={styles.CloseIcon} source={Close} />
-        </View>
-
-        <View style={styles.Product}>
-
-          <View style={styles.FirstPart}>
-            <Image style={styles.Image} source={orange} />
-
-          </View>
-
-          <View style={styles.SecondPart}>
-            <Text style={{ color: colors.green, fontSize: 20, fontFamily: fonts.Ru }}> Orange </Text>
-            <Text style={{ fontWeight: 'bold', marginStart: 8 }}> Details </Text>
-            <View style={styles.ContainerCounter}>
-              <Image style={styles.Moin} source={Moin} />
-              <Text style={{ fontWeight: 'bold', fontSize: 20, marginEnd: 5, marginStart: 5 }}>1</Text>
-              <Image style={styles.Plus} source={Plus} />
-            </View>
-          </View>
-
-          <View style={styles.Price}>
-            {/* <View>  <Image style={styles.Image} source={Close} /> </View> */}
-            <View><Text style={{ fontWeight: 'bold', fontSize: 17, alignSelf: 'center' }}>28$</Text></View>
-          </View>
-
-          <Image style={styles.CloseIcon} source={Close} />
-        </View>
 
       </ScrollView>
 
@@ -255,3 +214,8 @@ const styles = StyleSheet.create({
   }
 
 })
+
+
+
+
+

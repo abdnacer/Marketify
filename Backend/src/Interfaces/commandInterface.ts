@@ -3,8 +3,8 @@ interface CommandBody {
   id_Vendeur: string
   id_Client: string
   total_prix: number
+  quantity: number
   status: string
-  quantity: string
 }
 
 export default CommandBody

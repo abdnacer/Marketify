@@ -18,13 +18,13 @@ const commandSchema = new Schema<CommandBody>({
     type: Number,
     required: true
   },
+  quantity: {
+    type: Number,
+    required: true
+  },
   status: {
     type: String,
     ref: "Status"
-  },
-  quantity: {
-    type: String,
-    required: true
   }
 })
 

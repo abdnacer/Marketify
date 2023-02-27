@@ -11,37 +11,23 @@ const authSlice = createSlice({
     },
     reducers: {
         LOGIN_SUCCESS: (state, action) => {
-            return {
-                ...state,
-                isLogin: true,
-                message: 'LOGIN SUCCESS',
-                user: action.payload.user,
-                token: action.payload.token
-            }
+            state.isLogin = true
+            state.user = action.payload.user
+            state.token = action.payload.token
         },
         LOGIN_FAILED: (state, action) => {
-            return {
-                ...state,
-                isLogin: false,
-                message: 'LOGIN Not SUCCESS',
-                user: null,
-                token: null
-            }
+            state.isLogin = false
+            state.user = null
+            state.token = null
         },
-        LOGOUT: state => {
+        LOGOUT: (state, action) => {
+            state.user = null
+            state.token = null
             AsyncStorage.removeItem('token')    
-            AsyncStorage.removeItem('user') 
-            return {
-                ...state,
-                isLogin: false,
-                message: 'LOGOUT SUCCESS',
-                user: null,
-                token: null,
-            }
         }
     }
 })
 
-export const {LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT } = authSlice.actions
+export const {LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT } = authSlice
 
 export default authSlice
