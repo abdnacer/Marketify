@@ -9,6 +9,12 @@ import { ProduitRouter } from './Routes/userRouter/produitRouter'
 import { CategorieRouter } from './Routes/userRouter/categorieRouter'
 import { CommandsRouter } from './Routes/userRouter/commandRouter'
 import { AdminRouter } from './Routes/userRouter/adminRouter'
+import multer from 'multer'
+
+multer({
+  dest: 'src/public'
+})
+
 
 class App {
   public app: express.Application
@@ -22,8 +28,9 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: true }))
+    this.app.use(express.urlencoded({ extended: false }))
     this.app.use(cors())
+    // this.app.use(express.static(path.join(__dirname, 'public')));
   }
 
   private db() {
