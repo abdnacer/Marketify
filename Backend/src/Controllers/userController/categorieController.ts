@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Storage from 'local-storage'
+// import Storage from 'local-storage'
 import jwt from 'jsonwebtoken'
 import db from "../../Models";
 import HttpException from "../../Services/HttpException";
@@ -12,7 +12,8 @@ class ControllerCategories {
 
     if (name == '') return next(new HttpException(400, 'Please Fill All The Fields'))
 
-    const token: any = Storage('token')
+    // const token: any = Storage('token')
+    const token: any = req.cookies.token
     if (!token) return next(new HttpException(400, 'Token Not Found'))
 
     const tokenVerify: any = await jwt.verify(token, env.Node_ENV)
@@ -48,7 +49,8 @@ class ControllerCategories {
   }
 
   public afficherCategoriesUser = async (req: Request, res: Response, next: NextFunction) => {
-    const token: any = Storage('token')
+    // const token: any = Storage('token')
+    const token: any = req.cookies.token
     if (!token) return next(new HttpException(400, 'Token Not Found'))
 
     const verifyToken: any = await jwt.verify(token, env.Node_ENV)
