@@ -14,10 +14,8 @@ const ProduitSchema = new Schema<ProduitBody>({
     type: String,
     ref: "User"
   },
-  image: {
-    data: Buffer,
-    type: String,
-    required: false
+  images: {
+    type: String
   },
   description: {
     type: String,

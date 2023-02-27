@@ -1,29 +1,128 @@
-import { Request, Response, NextFunction } from "express"
-import { UpdateWriteOpResult } from "mongoose"
-import Storage from 'local-storage'
-import jwt from 'jsonwebtoken'
-import fs from 'fs'
-// import formidable from 'formidable'
-import { MongoClient, Binary } from 'mongodb';
-// import Les Middlewares
-import HttpException from "../../Services/HttpException"
-import env from '../../utils/validateEnv'
-// import Model
-import db from "../../Models"
+import { Request, Response, NextFunction } from "express";
+import HttpException from "../../Services/HttpException";
+import db from "../../Models";
+import imageDelete from "../../utils/images/deleteFile";
 
 class ControllerProduits {
+  public addProduits = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { name, id_Categorie, id_Vendeur, description, prix, quantity } = req.body;
+    const images = req.file?.filename;
 
-  public addProduits = async (req: Request, res: Response, next: NextFunction) => {
-    // const form = new formidable.IncomingForm()
+    if (
+      name == "" ||
+      id_Categorie == "" ||
+      id_Vendeur == "" ||
+      description == "" ||
+      prix == "" || 
+      quantity == ""
+    )
+      return next(new HttpException(400, "Please Fill All The Fields"));
 
-    // res.send(form)
-  }
+    const newProduit = {
+      name: name,
+      id_Categorie: id_Categorie,
+      id_Vendeur: id_Vendeur,
+      description: description,
+      prix: prix,
+      quantity: quantity,
+      images: images,
+    };
 
-  public AfficherProduits = async (req: Request, res: Response, next: NextFunction) => {
-    res.send('afficher' )
-  }
+    const isformfield = Object.values(newProduit).every((value) => {
+      if (value) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    if (isformfield) {
+      await db.Produits.create(newProduit)
+        .then(() => res.json("Product Added"))
+        .catch(() => new HttpException(400, "Produit is Not Added"));
+    } else new HttpException(400, "Invalid Data");
+  };
+
+  public AfficherProduits = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const allProducts = await db.Produits.find();
+    res.json(allProducts);
+  };
+
+  public AfficherProduitUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    res.send("Afficher Product User");
+  };
+
+  public modifierProduits = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id } = req.params;
+    const { name, id_Categorie, id_Vendeur, description, prix } = req.body;
+    const images = req.file?.filename;
+
+    const findId: any = await db.Produits.findById({ _id: id });
+
+    if (!findId) return next(new HttpException(400, "Id Not Found"));
+
+    if (
+      name == "" ||
+      id_Categorie == "" ||
+      id_Vendeur == "" ||
+      description == "" ||
+      prix == ""
+    )
+      return next(new HttpException(400, "Please Fill All The Fields"));
+
+    const updateProduit = {
+      name: name,
+      id_Categorie: id_Categorie,
+      id_Vendeur: id_Vendeur,
+      description: description,
+      prix: prix,
+      images: images,
+    };
+
+    if (updateProduit) {
+      await db.Produits.findByIdAndUpdate({ _id: id }, updateProduit)
+        .then(() => res.send("Product Updated"))
+        .catch(() => next(new HttpException(400, "Product Not Updated")));
+    } else next(new HttpException(400, "Invalid Data"));
+  };
+
+  public deleteProduits = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id } = req.params;
+
+    const findId: any = await db.Produits.findById({ _id: id });
+
+    if (!findId) return next(new HttpException(400, "Id Not Found"));
+
+    const imagePath = findId.images;
+
+    imageDelete.deleteFile(imagePath);
+
+    await db.Produits.findOneAndDelete({ _id: id })
+      .then(() => res.json("Produit Deleted"))
+      .catch(() => next(new HttpException(400, "Produit Not Deleted")));
+  };
 }
 
-const Produits = new ControllerProduits
+const Produits = new ControllerProduits();
 
-export default Produits
+export default Produits;
