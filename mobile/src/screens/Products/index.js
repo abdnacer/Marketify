@@ -1,5 +1,5 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {Alert, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {colors, fonts} from '../../resources';
 import LinearGradient from 'react-native-linear-gradient';
 import Orange from '../../assets/orange.png';
@@ -8,16 +8,35 @@ import Panier from '../../assets/Icons/Plus.png';
 import Header from '../../components/Header';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Product = ({navigation}) => {
-  const selectLogin = useSelector(state => state.auth.isLogin)
+  const [dataproducts, setProducts] = useState([]);
+
+  const selectLogin = useSelector(state => state.auth.isLogin);
+
+  const allProduct = async () => {
+    await axios
+      .get('http://172.30.208.1:5001/api/user/produits')
+      .then(res => {
+        setProducts(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const getCategories = async () => {
+    await axios
+      .get('http://172.30.208.1:5001/api/user/produits')
+  }
+
+  useEffect(() => {
+    allProduct();
+  }, []);
 
   return (
     <View>
-      <>
-        {selectLogin ? <Header logout cart /> : <Header login cart />}
-      </>
+      <>{selectLogin ? <Header logout cart /> : <Header login cart />}</>
       <Text style={styles.Title}>Choose your fruit</Text>
       <ScrollView showsHorizontalScrollIndicator={false}>
         <View style={styles.ContainerCategorie}>
@@ -43,102 +62,21 @@ const Product = ({navigation}) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 200}}>
         <View style={styles.ContainerProduct}>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
+          {dataproducts.map((product, index) => (
+            <LinearGradient key={index} colors={['#E2FFFC', '#FFF']} style={styles.Product}>
+              <View style={styles.PanierContainer}>
+                <Image source={Panier} style={styles.Pan} />
               </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={Orange} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
+              {/* <Image source={`http://localhost:5001/${product.image}`} style={styles.Image} /> */}
+              <Image source={Orange} style={styles.Image} />
+              <View style={styles.FooterCard}>
+                <View style={styles.Info}>
+                  <Text style={styles.text}> {product.name} </Text>
+                  <Text style={{fontWeight: 'bold', ...styles.text}}>{product.prix} $</Text>
+                </View>
               </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
-              </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
-              </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
-              </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
-              </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
-              </View>
-            </View>
-          </LinearGradient>
-          <LinearGradient colors={['#E2FFFC', '#FFF']} style={styles.Product}>
-            <View style={styles.PanierContainer}>
-              <Image source={Panier} style={styles.Pan} />
-            </View>
-            <Image source={WaterMelon} style={styles.Image} />
-            <View style={styles.FooterCard}>
-              <View style={styles.Info}>
-                <Text style={styles.text}> Orange </Text>
-                <Text style={{fontWeight: 'bold', ...styles.text}}>1$</Text>
-              </View>
-            </View>
-          </LinearGradient>
+            </LinearGradient>
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -198,6 +136,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: 150,
     alignSelf: 'center',
+    justifyContent: 'space-around',
     margin: 10,
   },
   h: {

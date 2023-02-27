@@ -39,10 +39,10 @@ class App {
 
   private router() {
     this.app.use('/api/auth', AuthRouter)
-    // this.app.use('/api/user', AdminRouter)
-    // this.app.use('/api/user', ProduitRouter)
-    // this.app.use('/api/user', CategorieRouter)
-    // this.app.use('/api/user', CommandsRouter)
+    this.app.use('/api/user', AdminRouter)
+    this.app.use('/api/user', ProduitRouter)
+    this.app.use('/api/user', CategorieRouter)
+    this.app.use('/api/user', CommandsRouter)
   }
 
   public listen() {
