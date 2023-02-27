@@ -7,13 +7,12 @@ import db from "../../Models";
 // import les dependcies
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Storage from "local-storage";
+// import localStorage from "local-storage";
+// import cookieParser from 'cookie-parser';
 
 class ControllerAuth {
-  //  Register
-
   public Register = async (req: Request, res: Response, next: NextFunction) => {
-    const {body } = req;
+    const { body } = req;
 
     if (
       body.first_name == "" ||
@@ -31,37 +30,36 @@ class ControllerAuth {
       // )
       // res.json("Password Not Matched")
       // else {
-        const userExists = await db.User.findOne({ email: body.email });
-        const phoneExists = await db.User.findOne({ phone: body.phone });
+      const userExists = await db.User.findOne({ email: body.email });
+      const phoneExists = await db.User.findOne({ phone: body.phone });
 
-        if (userExists) res.json("Email Déja Exists")
+      if (userExists) res.json("Email Déja Exists");
+      else {
+        if (phoneExists) res.json("Phone Déja Exists");
         else {
-          if (phoneExists)
-          res.json("Phone Déja Exists")
+          const salt = await bcrypt.genSalt(10);
+          const hash_pass = await bcrypt.hash(body.password, salt);
+
+          const role = await db.Role.aggregate([
+            { $match: { name: "client" } },
+          ]);
+
+          const user = await db.User.create({
+            first_name: body.first_name,
+            last_name: body.last_name,
+            phone: body.phone,
+            address: body.address,
+            email: body.email,
+            password: hash_pass,
+            role: role[0]._id,
+          });
+
+          if (user) res.json({ user });
           else {
-            const salt = await bcrypt.genSalt(10);
-            const hash_pass = await bcrypt.hash(body.password, salt);
-
-            const role = await db.Role.aggregate([
-              { $match: { name: "client" } },
-            ]);
-
-            const user = await db.User.create({
-              first_name: body.first_name,
-              last_name: body.last_name,
-              phone: body.phone,
-              address: body.address,
-              email: body.email,
-              password: hash_pass,
-              role: role[0]._id,
-            });
-
-            if (user) res.json({ user });
-            else {
-              res.json("Invalid User Data")
-            }
+            res.json("Invalid User Data");
           }
         }
+      }
       // }
     }
   };
@@ -86,7 +84,8 @@ class ControllerAuth {
           const token = this.generateToken(user.id);
 
           if (user && Pass_Correct && role && token) {
-            Storage("token", token);
+            res.cookie("token", token);
+            // localStorage("token", token);
             res.json({
               user: {
                 first_name: user.first_name,
@@ -118,14 +117,7 @@ class ControllerAuth {
     if (last_password == "" || nouveau_password == "" || confirm_password == "")
       return next(new HttpException(400, "Please Fill All The Fields"));
 
-    if (
-      typeof last_password !== "string" ||
-      typeof nouveau_password !== "string" ||
-      typeof confirm_password !== "string"
-    )
-      return next(new HttpException(400, "Type The One Fields Not Correct"));
-
-    const token: any = Storage("token");
+    const token = req.cookies.token;
     const verifyToken: any = await jwt.verify(token, env.Node_ENV);
     const find_user_id = await db.User.findById(verifyToken.id);
     if (!find_user_id) return next(new HttpException(400, "Token Not Correct"));
@@ -147,10 +139,10 @@ class ControllerAuth {
     if (newPassword) res.status(200).json("Password Your Changed");
   };
 
-  public Logout = async (req: Request, res: Response, next: NextFunction) => {
-    // Storage.clear()
-    // res.send('cle')
-  };
+  public logout = async(req: Request, res: Response) => {
+    await res.clearCookie("token");
+    res.send('Logout Succes');
+  }
 
   private generateToken = (id: string) => {
     const token = jwt.sign({ id }, env.Node_ENV, {

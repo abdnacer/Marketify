@@ -24,7 +24,7 @@ const Register = ({navigation}) => {
   const handleSignup = async () => {
     await axios.post('http://172.30.208.1:5001/api/auth/register', user)
     .then(res => {
-      console.log(res.data)
+      navigation.replace('login');
     })
     .catch(err => {
       console.log(err)

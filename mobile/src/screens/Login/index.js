@@ -1,38 +1,36 @@
-import {StyleSheet, Image, Text, View, ToastAndroid} from 'react-native';
+import {StyleSheet, Image, Text, View, ToastAndroid, Alert} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Input from '../../components/Input';
 import Gap from '../../components/Gap';
 import Logo from '../../assets/logo.png';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {LOGIN_FAILED, LOGIN_SUCCESS} from '../../features/authSclice';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
-
   const [user, setUser] = useState({email: '', password: ''});
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
-
-  const select = useSelector(state => state.auth);
 
   const handleLogin = async () => {
     await axios
       .post('http://172.30.208.1:5001/api/auth/login', user)
       .then(res => {
         if (!res.data.token) {
-          dispatch(LOGIN_FAILED(res.data));
-          ToastAndroid.showWithGravity(
-            res.data,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        } else {
+          dispatch(LOGIN_FAILED());
+        } 
+        else if (res.data.user.role === 'client') {
           dispatch(LOGIN_SUCCESS(res.data));
           AsyncStorage.setItem('user', JSON.stringify(res.data.user));
           AsyncStorage.setItem('token', res.data.token);
+          navigation.replace('products');
+        }
+        else if (res.data.user.role !== 'client') {
+          dispatch(LOGIN_FAILED());
+          navigation.replace('pageNotAccess');
         }
       })
       .catch(err => {
@@ -96,5 +94,6 @@ const styles = StyleSheet.create({
   },
   containerBottom: {
     alignSelf: 'center',
-  },extAlign: 'center',
+  },
+  extAlign: 'center',
 });
