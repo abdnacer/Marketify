@@ -28,10 +28,16 @@ const authSlice = createSlice({
                 token: null
             }
         },
-        LOGOUT: (state, action) => {
-            state.user = null
-            state.token = null
+        LOGOUT: state => {
             AsyncStorage.removeItem('token')    
+            AsyncStorage.removeItem('user') 
+            return {
+                ...state,
+                isLogin: false,
+                message: 'LOGOUT SUCCESS',
+                user: null,
+                token: null,
+            }
         }
     }
 })
