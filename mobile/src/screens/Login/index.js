@@ -7,11 +7,9 @@ import Header from '../../components/Header';
 import Button from '../../components/Button';
 import {useSelector, useDispatch} from 'react-redux';
 import {LOGOUT, LOGIN_SUCCESS, LOGIN_FAILED} from '../../features/authSclice';
-// import AuthApiLogin from '../../api/auth/authApi'
 import axios from 'axios';
 
 const Login = ({navigation}) => {
-  // const baseURL = 'http://localhost:5000/api/auth'
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
