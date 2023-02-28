@@ -1,33 +1,47 @@
-import {createSlice} from '@reduxjs/toolkit'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import {createSlice} from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const authSlice = createSlice({
-    name: 'auth',
-    initialState: {
+  name: 'auth',
+  initialState: {
+    isLogin: false,
+    user: null,
+    token: null,
+    message: null,
+  },
+  reducers: {
+    LOGIN_SUCCESS: (state, action) => {
+      return {
+        ...state,
+        isLogin: true,
+        message: 'LOGIN SUCCESS',
+        user: action.payload.user,
+        token: action.payload.token,
+      };
+    },
+    LOGIN_FAILED: (state, action) => {
+      return {
+        ...state,
         isLogin: false,
+        message: 'LOGIN Not SUCCESS',
         user: null,
         token: null,
-        message: null
+      };
     },
-    reducers: {
-        LOGIN_SUCCESS: (state, action) => {
-            state.isLogin = true
-            state.user = action.payload.user
-            state.token = action.payload.token
-        },
-        LOGIN_FAILED: (state, action) => {
-            state.isLogin = false
-            state.user = null
-            state.token = null
-        },
-        LOGOUT: (state, action) => {
-            state.user = null
-            state.token = null
-            AsyncStorage.removeItem('token')    
-        }
-    }
-})
+    LOGOUT: state => {
+      AsyncStorage.removeItem('token');
+      AsyncStorage.removeItem('user');
+      return {
+        ...state,
+        isLogin: false,
+        message: 'LOGOUT SUCCESS',
+        user: null,
+        token: null,
+      };
+    },
+  },
+});
 
-export const {LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT } = authSlice
+export const {LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT} = authSlice.actions;
 
-export default authSlice
+export default authSlice;

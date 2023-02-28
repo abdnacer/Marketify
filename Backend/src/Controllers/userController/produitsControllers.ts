@@ -39,7 +39,7 @@ class ControllerProduits {
 
   public AfficherProduits = async (req: Request, res: Response, next: NextFunction) => {
     const allProducts = await db.Produits.find()
-    res.send(allProducts)
+    res.json(allProducts)
   }
 
   public AfficherProduitUser = async (req: Request, res: Response, next: NextFunction) => {
