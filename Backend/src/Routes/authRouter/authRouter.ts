@@ -16,7 +16,7 @@ class RouterAuth {
     this.router.post('/register', permission.authPermission, Auth.Register)
     this.router.post('/login', permission.authPermission, Auth.Login)
     this.router.put('/reset-password', permission.userPermission, Auth.ResetPassword)
-    this.router.get('/logout', permission.authPermission, Auth.Logout)
+    this.router.get('/logout', permission.authPermission, Auth.logout)
   }
 
   private errorMiddleware() {

@@ -2,7 +2,6 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import { db_conex } from './Config/db'
-import path from 'path';
 import './Models'
 import env from './utils/validateEnv'
 import { AuthRouter } from './Routes/authRouter/authRouter'
@@ -11,6 +10,7 @@ import { CategorieRouter } from './Routes/userRouter/categorieRouter'
 import { CommandsRouter } from './Routes/userRouter/commandRouter'
 import { AdminRouter } from './Routes/userRouter/adminRouter'
 import multer from 'multer'
+const cookieParser = require("cookie-parser");
 
 multer({
   dest: 'src/public'
@@ -31,6 +31,7 @@ class App {
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: false }))
     this.app.use(cors())
+    this.app.use(cookieParser());
     // this.app.use(express.static(path.join(__dirname, 'public')));
   }
 
