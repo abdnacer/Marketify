@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import Storage from 'local-storage'
 import jwt from 'jsonwebtoken'
 import db from "../../Models";
 import HttpException from "../../Services/HttpException";
@@ -10,25 +9,32 @@ class ControllerCategories {
   public addCategories = async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body
 
-    if (name == '') return next(new HttpException(400, 'Please Fill All The Fields'))
+    if (name == '') res.json('Please Fill All The Fields')
+    else{
+      const token = req.cookies.token;
+      if (!token) res.json('Token Not Found')
+      else{
+        const tokenVerify: any = await jwt.verify(token, env.Node_ENV)
+        if (!tokenVerify) res.json('Token Not verified')
+        else{
+          const findUser:any = await db.User.findById({ _id: tokenVerify.id })
+          if (!findUser) res.json('User Not Found')
+          else{
+            const categorie = await db.Categories.create({
+              name: name,
+              id_Vendeur: findUser.id
+            })
+        
+            if (!categorie) res.json('Categorie Not Created')
+            else res.json('Categorie Created')
+          }
+      
+        }
+    
+      }
+  
 
-    const token: any = Storage('token')
-    if (!token) return next(new HttpException(400, 'Token Not Found'))
-
-    const tokenVerify: any = await jwt.verify(token, env.Node_ENV)
-    if (!tokenVerify) return next(new HttpException(400, 'Token Not verified'))
-
-    const findUser = await db.User.findById({ _id: tokenVerify.id })
-    if (!findUser) return next(new HttpException(400, 'User Not Found'))
-
-    const categorie = await db.Categories.create({
-      name: name,
-      id_Vendeur: findUser.id
-    })
-
-    if (!categorie) return next(new HttpException(400, 'Categorie Not Created'))
-    else res.status(200).json('Categorie Created')
-
+    }
   }
 
   public modifierCategories = async (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +54,7 @@ class ControllerCategories {
   }
 
   public afficherCategoriesUser = async (req: Request, res: Response, next: NextFunction) => {
-    const token: any = Storage('token')
+    const token = req.cookies.token;
     if (!token) return next(new HttpException(400, 'Token Not Found'))
 
     const verifyToken: any = await jwt.verify(token, env.Node_ENV)
@@ -68,8 +74,8 @@ class ControllerCategories {
     const categorie = await db.Categories.find()
       .populate({ path: 'id_Vendeur', model: db.User })
 
-    if (!categorie) return next(new HttpException(400, 'Categorie Not Found'))
-    else res.status(200).json(categorie)
+    if (!categorie) res.json('Categorie Not Found')
+    else res.json(categorie)
   }
 
   public deleteCategories = async (req: Request, res: Response, next: NextFunction) => {

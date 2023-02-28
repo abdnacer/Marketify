@@ -8,12 +8,13 @@ const panierSlice = createSlice({
     },
     reducers: {
         ADD_PRODUCT: (state, action) => {
-            const { id, client, total_price, quantity } = action.payload;
-            // if the product already exist
-            const nbr_product = state.product.findIndex(p => p.id === id);
-            if (nbr_product >= 0) { state.product[nbr_product].quantity += quantity; }
-            //add
-            else { state.product.push({id, client, total_price, quantity  }); }
+            console.log('panier')
+            // const { id, vendeur, client, total_price, quantity } = action.payload;
+            // // if the product already exist
+            // const nbr_product = state.product.findIndex(p => p.id === id);
+            // if (nbr_product >= 0) { state.product[nbr_product].quantity += quantity; }
+            // //add
+            // else { state.product.push({id, client, total_price, quantity  }); }
         },
 
         DELETE_PRODUCT: (state, action) => {
